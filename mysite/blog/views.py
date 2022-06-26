@@ -8,25 +8,30 @@ from . import models
 
 # Create your views here.
 class PostListView(ListView):
-    model = models.Post 
+    model = models.Post
     paginate_by = 5
 
+
 class PostCreateView(CreateView):
-    model = models.Post 
+    model = models.Post
     fields = "__all__"
     success_url = reverse_lazy("blog:all")
 
+
 class PostDetailView(DetailView):
-    model = models.Post 
+    model = models.Post
+
 
 class PostUpdateView(UpdateView):
     model = models.Post
     fields = "__all__"
     success_url = reverse_lazy("blog:all")
 
+
 class PostDeleteView(DeleteView):
     model = models.Post
     success_url = reverse_lazy("blog:all")
+
 
 # def post_list(request):
 #     posts = models.Post.published.all()

@@ -22,12 +22,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", default="django-insecure-&!7)=mszv_hk_y2f@xv-$f-beh3&x)5pvpcwwgyg)=*efn1rj-")
+SECRET_KEY = os.getenv(
+    "DJANGO_SECRET_KEY",
+    default="django-insecure-&!7)=mszv_hk_y2f@xv-$f-beh3&x)5pvpcwwgyg)=*efn1rj-",
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = 'DEBUG' not in os.environ
+DEBUG = "DEBUG" not in os.environ
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -39,11 +42,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    
-    # 3rd Party 
+    # 3rd Party
     "django_extensions",
     "rest_framework",
-
     # Local apps
     "blog.apps.BlogConfig",
 ]
@@ -91,10 +92,10 @@ if DEBUG:
 
 else:
     DATABASES = {
-        'default': dj_database_url.config(
+        "default": dj_database_url.config(
             # Feel free to alter this value to suit your needs.
-            default='postgresql://postgres:postgres@localhost:5432/mysite',
-            conn_max_age=600
+            default="postgresql://postgres:postgres@localhost:5432/mysite",
+            conn_max_age=600,
         )
     }
 
@@ -134,9 +135,7 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 
-STATICFILES_DIRS = (
-    BASE_DIR.joinpath( "static/"),
-)
+STATICFILES_DIRS = (BASE_DIR.joinpath("static/"),)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
