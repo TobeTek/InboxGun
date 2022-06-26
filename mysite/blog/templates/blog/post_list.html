@@ -1,0 +1,54 @@
+{% extends 'base.html' %} 
+{% block content %} 
+
+<div class="container d-flex mt-5" style="width: 70%">
+  <div class="col">
+    <h1 class="text-center">Blog Posts</h1>
+    <table class="table table-striped mt-5">
+      <thead>
+        <tr>
+
+          <th>#</th>
+
+          <th class="text-center" scope="col">Title</th>
+          <th class="text-center" scope="col">Author</th>
+          <th class="text-center" scope="col">Summary</th>
+          <th class="text-center" scope="col">Status</th>
+          <th class="text-center" scope="col">Date Published</th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for post in post_list %}
+        <tr>
+          
+          <th scope="row">{{forloop.counter}}</th>
+          
+          <td class="ml-5">
+            <a href="{{post.get_absolute_url}}">{{post.title}}</a>
+          </td>
+          <td class="text-center">{{post.author}}</td>
+          <td class="text-center">{{post.body|truncatewords:30|linebreaks}}</td>
+          <td class="text-center">{{post.status}}</td>
+          <td class="text-center">{{post.publish|date:"D, d M, y"}}</td>
+          <td><a href="{% url 'blog:post_update' post.slug %} ">Update</a></td>
+          <td><a href="{% url 'blog:post_delete' post.slug %}">Delete</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+      
+    </table>
+    {% include "pagination.html" with page=page_obj %}
+
+    <div class="d-flex justify-content-center">
+      <a
+        href="{% url 'blog:post_create' %}"
+        class="d-block btn btn-primary btn-lg my-5"
+        >Add New</a
+      >
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
