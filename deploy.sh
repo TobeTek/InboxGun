@@ -1,3 +1,3 @@
 cd ./mysite
-
-gunicorn mysite.asgi:application
+python ./manage.py runserver
+# gunicorn mysite.asgi:application
