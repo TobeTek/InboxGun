@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from pathlib import Path
 import dj_database_url
 import os
+from decouple import config 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,13 +23,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv(
+SECRET_KEY = config(
     "DJANGO_SECRET_KEY",
     default="django-insecure-&!7)=mszv_hk_y2f@xv-$f-beh3&x)5pvpcwwgyg)=*efn1rj-",
 )
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = "DEBUG" not in os.environ
+DEBUG = config("DJANGO_DEBUG", default=False, cast=bool)
 
 ALLOWED_HOSTS = ["*"]
 
@@ -51,6 +52,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -94,7 +96,7 @@ else:
     DATABASES = {
         "default": dj_database_url.config(
             # Feel free to alter this value to suit your needs.
-            default="postgresql://postgres:postgres@localhost:5432/mysite",
+            default=os.getenv("DATABASE_URL"),
             conn_max_age=600,
         )
     }
@@ -136,6 +138,14 @@ USE_TZ = True
 STATIC_URL = "static/"
 
 STATICFILES_DIRS = (BASE_DIR.joinpath("static/"),)
+
+# Tell Django to copy statics to the `staticfiles` directory
+# in your application directory on Render.
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Turn on WhiteNoise storage backend that takes care of compressing static files
+# and creating unique names for each version so they can safely be cached forever.
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
