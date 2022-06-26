@@ -4,7 +4,8 @@ set -o errexit
 
 pip install -r ./requirements.txt
 
-cd mysite
+cd ./mysite
+pwd 
 
 python ./mysite/manage.py collectstatic --no-input
 python ./mysite/manage.py migrate
