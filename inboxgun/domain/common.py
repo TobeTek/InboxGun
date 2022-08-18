@@ -15,7 +15,7 @@ class Step:
     parent_id: int = None
     id: int = field(init=False)
 
-    def run(self, triggers: Dict = None, conditions: Dict = None, actions: Dict = None):
+    def run(self, triggers: Dict, conditions: Dict, actions: Dict):
         # Check if trigger.
         # If yes, run
         # Trigger.schedule(data)

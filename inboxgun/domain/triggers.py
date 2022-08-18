@@ -1,10 +1,11 @@
 from dataclasses import dataclass, field
 from datetime import datetime
 from uuid import uuid4
-import events
+from . import events
 from .common import Step
+from typing import Dict
 
-# @dataclass
+@dataclass
 class Trigger:
     """Trigger object"""
     trigger_event: events.Event
@@ -18,7 +19,7 @@ class Trigger:
     def __call__(self, event, event_queue):
         return self.process_event(event, event_queue)
 
-
+@dataclass
 class TimeTrigger(Trigger):
     """Execute children steps when a particular date/time is reached"""
 
@@ -29,7 +30,7 @@ class TimeTrigger(Trigger):
         for step in self.step.children_steps:
             step.run()
 
-@dataclass
+@dataclass(kw_only=True)
 class OptInTrigger(Trigger):
     """
     The opt-in element will be used to trigger actions in the automation sequence when someone
@@ -38,11 +39,12 @@ class OptInTrigger(Trigger):
     workflow_id: str
     step: Step
 
-    trigger_event: Event = events.CustomerOptIn
-    def process_event(self, event, event_queue):
+    trigger_event: events.Event = events.CustomerOptIn
+
+    def process_event(self, event, event_queue, triggers: Dict, conditions: Dict, actions: Dict):
         print(f"Processing {event=}")
         for step in self.step.children_steps:
-            step.run()
+            step.run(triggers, conditions, actions)
 
 @dataclass
 class RemoveFromListTrigger(Trigger):

@@ -30,7 +30,7 @@ def handle_event(event: events.Event, event_queue: List[events.Event] = None):
         event_queue = list()
     for event in event_queue:
         for subscriber in EVENT_HANDLERS[type(event)]:
-            subscriber(event, event_queue)
+            subscriber(event, event_queue, triggers=TRIGGER_TYPES, conditions=None, actions=None)
 
 def add_subscriber(subscriber: Callable, event_type: str):
     EVENT_HANDLERS[event_type].append(subscriber)
@@ -41,3 +41,5 @@ def add_triggers(trigger, event_type):
 def get_trigger_types():
     return TRIGGER_TYPES
 
+def get_event_handlers():
+    return EVENT_HANDLERS

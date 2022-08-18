@@ -3,6 +3,7 @@ from sqlalchemy import MetaData, Table, Integer, String, Column, ForeignKey
 import sqlalchemy
 
 from domain.common import Step
+from domain.workflows import Workflow
 
 engine = sqlalchemy.create_engine("sqlite:///./here.sqlite3")
 connection = engine.connect()
@@ -19,7 +20,8 @@ step_table = Table(
 
 )
 step_mapper = mapper(Step, step_table, properties={
-    'parent' : relationship(Step, backref='children_steps', remote_side=[step_table.c.id])
+    'parent' : relationship(Step, backref='children_steps', remote_side=[step_table.c.id]),
+    
 })
 
 
@@ -31,6 +33,7 @@ workflow_table = Table(
     Column('status', String(255)),
     Column('user_id', String(255)),
 )
+workflow_mapper = mapper(Workflow, workflow_table)
 
 # lines_mapper = mapper(Step, step_table)
 metadata.create_all(engine)
@@ -102,9 +105,9 @@ session = Session()
 # })
 # s.persist_step(session=session)
 
-# s = Step(parent_id=2, children_steps=[], step_type="trigger:opt-in", step_data='{"date":"2019-20-01.10-23-12.1243}', workflow_id="workflow_2020")
-# s.persist_step(session)
-# print(s)
-# q = session.query(Step).filter(Step.id == 2).first()
-# print(q.children_steps)
+s = Step(parent_id=2, children_steps=[], step_type="trigger:opt-in", step_data='{"date":"2019-20-01.10-23-12.1243}', workflow_id="workflow_2020")
+s.persist_step(session)
+print(s)
+q = session.query(Step).filter(Step.id == 2).first()
+print(q.children_steps)
 
