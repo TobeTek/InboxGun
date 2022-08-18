@@ -102,3 +102,7 @@ ENV/
 # pycharm
 .idea/*
 test/test.py
+
+# DB
+*.sqlite3
+*.sqlite
