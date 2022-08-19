@@ -2,6 +2,7 @@
 
 from inboxgun.domain.common import Step
 
+
 def test_step_constraints():
     s = Step(
         parent_id=2,

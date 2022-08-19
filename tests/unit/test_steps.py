@@ -1,5 +1,6 @@
 from inboxgun.domain.common import Step
 
+
 def test_create_step():
     s = Step(
         parent_id=2,

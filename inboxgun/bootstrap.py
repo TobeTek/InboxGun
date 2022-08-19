@@ -1,8 +1,9 @@
 """Config for Project and EDA"""
 
+import copy
 from collections import defaultdict, deque
 from typing import Callable, Deque, List
-import copy
+
 from .domain import actions, conditions, events, triggers  # noqa
 
 TRIGGER_TYPES = {

@@ -4,13 +4,14 @@ Example Entrypoint
 Similar to what you'd have at an API Endpoint
 """
 from collections import deque
-from .db.orm import get_session
+
+import sqlalchemy
 
 from . import bootstrap
+from .db.orm import get_session
 from .domain import actions, conditions, events, triggers
 from .domain.common import Step
 from .domain.workflows import Workflow
-import sqlalchemy
 
 engine = sqlalchemy.create_engine("sqlite:///./main.sqlite3")
 session = get_session(engine)
