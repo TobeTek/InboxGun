@@ -2,6 +2,7 @@ import pytest
 import sqlalchemy
 
 
-@pytest.fixture
+
+@pytest.fixture(scope="session")
 def session():
-    return Session
+    return "Session"

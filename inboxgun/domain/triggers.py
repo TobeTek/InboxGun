@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from typing import Callable, Dict
 from uuid import uuid4
 
-from domain import actions, common, events
+from . import actions, common, events
 
 
 @dataclass

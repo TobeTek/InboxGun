@@ -1,32 +1,19 @@
-import sqlalchemy
-from sqlalchemy import (
-    Column,
-    ForeignKey,
-    Integer,
-    MetaData,
-    String,
-    Table,
-    UniqueConstraint,
-    Boolean,
-)
+import sqlalchemy as db
 from sqlalchemy.orm import backref, mapper, relationship, sessionmaker
 
 from domain.common import Step
 from domain.workflows import Workflow
 
-engine = sqlalchemy.create_engine("sqlite:///./here.sqlite3")
-connection = engine.connect()
-
-metadata = MetaData()
-step_table = Table(
+metadata = db.MetaData()
+step_table = db.Table(
     "step",
     metadata,
-    Column("id", Integer, primary_key=True, autoincrement=True),
-    Column("step_type", String(255)),
-    Column("workflow_id", String(255)),
-    Column("is_starting_step", Boolean, server_default="false"),
-    Column("step_data", String(255)),
-    Column("parent_id", Integer, ForeignKey("step.id"), nullable=True),
+    db.Column("id", db.Integer, primary_key=True, autoincrement=True),
+    db.Column("step_type", db.String(255)),
+    db.Column("workflow_id", db.String(255)),
+    db.Column("is_starting_step", db.Boolean, server_default="false"),
+    db.Column("step_data", db.String(255)),
+    db.Column("parent_id", db.Integer, db.ForeignKey("step.id"), nullable=True),
 )
 step_mapper = mapper(
     Step,
@@ -39,105 +26,24 @@ step_mapper = mapper(
 )
 
 
-workflow_table = Table(
+workflow_table = db.Table(
     "workflow",
     metadata,
-    Column("id", String(255), primary_key=True),
-    Column("name", String(255)),
-    Column("status", String(255)),
-    Column("user_id", String(255)),
-    UniqueConstraint(
+    db.Column("id", db.String(255), primary_key=True),
+    db.Column("name", db.String(255)),
+    db.Column("status", db.String(255)),
+    db.Column("user_id", db.String(255)),
+    db.UniqueConstraint(
         "name", "user_id", name="unique_name_for_user"
     ),  # User can not have two workflows with the same name
 )
 workflow_mapper = mapper(Workflow, workflow_table)
 
-# lines_mapper = mapper(Step, step_table)
-metadata.create_all(engine)
-
-# from sqlalchemy.orm import sessionmaker
-Session = sessionmaker(bind=engine)
-
-session = Session()
-
-# s = Step(**{
-#     "workflow_id":"HelloWorld",
-#     "step_type":"trigger:opt-in",
-#     "parent_id": None,
-
-#     "children_steps": [
-#         {
-
-#             "parent_id": "0",
-#             "workflow_id":"HelloWorld",
-#             "step_type":"action:send-mail",
-#             "steps": []
-#         },
-#         {
-
-#             "parent_id": "0",
-#             "workflow_id":"HelloWorld",
-#             "step_type":"action:send-mail",
-#             "steps": [
-#                 {
-
-#                     "parent_id": "2",
-#                     "workflow_id":"HelloWorld",
-#                     "step_type":"trigger:schedule-action",
-#                     "steps": []
-#                 },
-#                 {
-
-#                    "parent_id": "2",
-#                     "workflow_id":"HelloWorld",
-#                     "step_type":"action:deactivate-user",
-#                     "steps": []
-#                 }
-#             ]
-#         },
-#         {
-
-#             "parent_id": "0",
-#             "workflow_id":"HelloWorld",
-#             "step_type":"action:send-mail",
-#             "steps": [
-#                 {
-
-#                     "parent_id": "5",
-#                     "workflow_id":"HelloWorld",
-#                     "step_type":"trigger:schedule-action",
-#                     "steps": []
-#                 },
-#                 {
-
-#                    "parent_id": "5",
-#                     "workflow_id":"HelloWorld",
-#                     "step_type":"action:deactivate-user",
-#                     "steps": []
-#                 }
-#             ]
-#         }
-#     ]
-
-# })
-# s.persist_step(session=session)
-
-s = Step(
-    parent_id=2,
-    children_steps=[],
-    step_type="trigger:opt-in",
-    step_data='{"trigger":"2019-20-01.10-23-12.1243"}',
-    workflow_id="1",
-)
-# s.persist_step(session)
-# s2 = Step(
-#     parent_id=1,
-#     children_steps=[],
-#     step_type="action:send-mail",
-#     step_data='{"date":"2019-20-01.10-23-12.1243", "target_emails":["user1@email.com", "user2@email.com", "user3@email.com"]}',
-#     workflow_id="1",
-# )
-# s2.persist_step(session)
-# print(s,s2)
-# q = session.query(Step).filter(Step.id == 1).first()
-# print(q.children_steps)
+def get_session(engine):
+    metadata.create_all(engine)
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    try:
+        return session
+    finally:
+        session.close()

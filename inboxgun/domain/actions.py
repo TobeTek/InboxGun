@@ -2,7 +2,7 @@ import json
 from dataclasses import dataclass
 from typing import Callable, Dict
 
-from domain import common, triggers
+from . import common, triggers
 
 
 @dataclass

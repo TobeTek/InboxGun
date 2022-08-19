@@ -5,13 +5,17 @@ Similar to what you'd have at an API Endpoint
 """
 from collections import deque
 import bootstrap
-from db.orm import session
-from domain import actions, conditions, events, triggers
-from domain.common import Step
-from domain.workflows import Workflow
+from db.orm import get_session
+from .domain import actions, conditions, events, triggers
+from .domain.common import Step
+from .domain.workflows import Workflow
+import sqlalchemy
 
+engine = sqlalchemy.create_engine("sqlite:///./here.sqlite3")
+session = get_session(engine)
 
-def test():
+def sample_create_step():
+    """Create a step and running it's downstream steps"""
     q = session.query(Step).filter(Step.id == 1).first()
     process = q.run(
         triggers_types=bootstrap.get_trigger_types(),
@@ -37,7 +41,12 @@ def test():
         bootstrap.handle_event(event)
 
 
-def test_workflow():
+def sample_create_and_run_workflow():
+    """
+    Create a workflow and run all connected steps
+
+    Abstract the idea of running individual steps
+    """
     w = Workflow(
         status="completed", name="Send Reminder Emails to Favourite subscribers"
     )
@@ -57,8 +66,7 @@ def test_workflow():
         customer_list="Adults that went to Harvard",
         reason="I'm bored. Lemme alone",
     )
-    # for _ in range(10):
-    bootstrap.handle_event(event, event_queue=deque([event]))
+    bootstrap.handle_event(event, event_queue=deque([]))
 
 
-test_workflow()
+sample_create_and_run_workflow()

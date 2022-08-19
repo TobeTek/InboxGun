@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any, Callable, List, Optional
 
-from domain.utils import generate_random_id
+from .utils import generate_random_id
 
 from . import actions, common, triggers
 
