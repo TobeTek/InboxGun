@@ -25,3 +25,4 @@ To run tests:
  - Resume Workflow inbetween execution
  - Add support for timed triggers. They don't need to subscribe to events and can be handled by a scheduler.
  - Make the logic for Running next steps more 'DRY'.
+ - Add `Conditions`
