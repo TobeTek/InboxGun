@@ -1,8 +1,8 @@
 import sqlalchemy as db
 from sqlalchemy.orm import backref, mapper, relationship, sessionmaker
 
-from domain.common import Step
-from domain.workflows import Workflow
+from inboxgun.domain.common import Step
+from inboxgun.domain.workflows import Workflow
 
 metadata = db.MetaData()
 step_table = db.Table(

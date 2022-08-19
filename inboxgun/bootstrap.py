@@ -3,7 +3,7 @@
 from collections import defaultdict, deque
 from typing import Callable, Deque, List
 import copy
-from domain import actions, conditions, events, triggers  # noqa
+from .domain import actions, conditions, events, triggers  # noqa
 
 TRIGGER_TYPES = {
     "trigger:opt-in": triggers.OptInTrigger,
@@ -56,8 +56,6 @@ def handle_event(event: events.Event, event_queue: Deque[events.Event] = None):
     if event_queue is None:
         event_queue = deque()
     event_queue.appendleft(event)
-
-    print(len(event_queue))
 
     for event in event_queue:
         subscribers = EVENT_HANDLERS[type(event)].copy()

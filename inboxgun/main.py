@@ -4,27 +4,52 @@ Example Entrypoint
 Similar to what you'd have at an API Endpoint
 """
 from collections import deque
-import bootstrap
-from db.orm import get_session
+from .db.orm import get_session
+
+from . import bootstrap
 from .domain import actions, conditions, events, triggers
 from .domain.common import Step
 from .domain.workflows import Workflow
 import sqlalchemy
 
-engine = sqlalchemy.create_engine("sqlite:///./here.sqlite3")
+engine = sqlalchemy.create_engine("sqlite:///./main.sqlite3")
 session = get_session(engine)
+
+def create_fixtures():
+    Step(
+        parent_id=None,
+        children_steps=[],
+        step_type="trigger:opt-in",
+        step_data='{"trigger":"2019-20-01.10-23-12.1243"}',
+        workflow_id="1",
+    ).persist_step(session)
+
+    s = Step(
+        parent_id=1,
+        children_steps=[],
+        step_type="trigger:opt-in",
+        step_data='{"trigger":"2019-20-01.10-23-12.1243"}',
+        workflow_id="1",
+    )
+    s2 = Step(
+        parent_id=1,
+        children_steps=[],
+        step_type="action:send-mail",
+        step_data='{"date":"2019-20-01.10-23-12.1243", "target_emails":["user1@email.com", "user2@email.com", "user3@email.com"]}',
+        workflow_id="1",
+    )
+    s.persist_step(session)
+    s2.persist_step(session)
 
 def sample_create_step():
     """Create a step and running it's downstream steps"""
-    q = session.query(Step).filter(Step.id == 1).first()
-    process = q.run(
+    step = session.query(Step).filter(Step.id == 1).first()
+    process = step.run(
         triggers_types=bootstrap.get_trigger_types(),
         conditions_types=None,
         actions_types=None,
     )
-    print(process)
     if isinstance(process, triggers.Trigger):
-        print("Adding subscriber")
         bootstrap.add_subscriber(process, process.trigger_event)
 
     elif isinstance(process, actions.Action):
@@ -35,10 +60,11 @@ def sample_create_step():
     event = events.CustomerOptIn(
         customer_id="customer_2012",
         customer_list="Adults that went to Harvard",
-        reason="I'm bored. Lemme alone",
+        reason="Great Newsletter",
     )
-    for _ in range(10):
-        bootstrap.handle_event(event)
+    
+    # Trigger all subscribers to that event
+    bootstrap.handle_event(event)
 
 
 def sample_create_and_run_workflow():
@@ -64,9 +90,10 @@ def sample_create_and_run_workflow():
     event = events.CustomerOptIn(
         customer_id="customer_2012",
         customer_list="Adults that went to Harvard",
-        reason="I'm bored. Lemme alone",
+        reason="Personal reasons",
     )
     bootstrap.handle_event(event, event_queue=deque([]))
 
-
+create_fixtures()
+sample_create_step()
 sample_create_and_run_workflow()
