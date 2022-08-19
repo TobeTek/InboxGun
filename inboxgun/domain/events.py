@@ -6,12 +6,13 @@ class Event:
 
 @dataclass
 class CustomerOptIn(Event):
-    customer_id: str 
+    customer_id: str
     customer_list: str
     reason: Optional[str]
 
+
 @dataclass
 class CustomerRemoveFromList(Event):
-    customer_id: str 
+    customer_id: str
     customer_list: str
     reason: Optional[str]
