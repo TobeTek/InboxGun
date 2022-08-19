@@ -12,13 +12,13 @@ Install requirements
 
 To run a demo:
 ```bash
-> python inboxgun/main.py
+> python -m inboxgun.main
 ```
 
 To run tests:
 
 ```bash
-pytest 
+> pytest 
 ```
 
 ## TODO: 
