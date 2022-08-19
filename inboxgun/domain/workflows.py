@@ -30,7 +30,13 @@ class Workflow:
 
     def set_starting_step(self, step: common.Step, session):
         """Change/Set the first step for the workflow"""
+        if step.workflow_id != self.id:
+            raise ValueError(f"{step=} is not linked to this workflow {self}")
+        if step.parent_id is not None:
+            raise ValueError(f"{step=} has a parent step and can not be a starting step")
+
         step.is_starting_step = True
+        
         session.add(step)
         session.commit()
         session.refresh(self)
@@ -73,11 +79,12 @@ class Workflow:
             )
             if isinstance(process, triggers.Trigger):
                 add_subscriber(process, process.trigger_event)
+
             elif isinstance(process, actions.Action):
                 process.run(
-                    triggers=triggers,
-                    conditions=None,
-                    actions=None,
+                    triggers_types=triggers_types,
+                    conditions_types=conditions_types,
+                    actions_types=actions_types,
                     add_subscriber=add_subscriber,
                 )
 

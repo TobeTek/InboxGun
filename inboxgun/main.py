@@ -77,9 +77,15 @@ def sample_create_and_run_workflow():
     w = Workflow(
         status="completed", name="Send Reminder Emails to Favourite subscribers"
     )
-    q = session.query(Step).filter(Step.id == 1).first()
+    s = Step(
+        parent_id=None,
+        children_steps=[],
+        step_type="action:send-mail",
+        step_data='{"date":"2019-20-01.10-23-12.1243", "target_emails":["user1@email.com", "user2@email.com", "user3@email.com"]}',
+        workflow_id=w.id,
+    )
     w.persist_workflow(session)
-    w.set_starting_step(q, session)
+    w.set_starting_step(s, session)
     w.run(
         triggers_types=bootstrap.get_trigger_types(),
         conditions_types=None,

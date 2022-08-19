@@ -79,7 +79,7 @@ def get_trigger_types():
 
 def get_action_types():
     """Retrieve trigger types for the project"""
-    return TRIGGER_TYPES
+    return ACTION_TYPES
 
 
 def get_condition_types():
