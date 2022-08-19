@@ -8,7 +8,7 @@ from .utils import generate_random_id
 
 @dataclass
 class Workflow:
-
+    """Adapter for Automation Steps"""
     status: str
     name: str
     id: str = field(default_factory=generate_random_id)  # UUID
