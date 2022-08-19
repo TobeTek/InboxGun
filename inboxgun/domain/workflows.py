@@ -61,7 +61,7 @@ class Workflow:
     ):
         starting_steps = (
             session.query(common.Step)
-            .filter(common.Step.is_starting_step == True)
+            .filter(common.Step.is_starting_step == True, common.Step.workflow_id == self.id)
             .all()
         )
         print("Starting Workflow\nInitial Steps:", starting_steps)
